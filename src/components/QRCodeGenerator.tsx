@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { Button } from "@/components/ui/button";
@@ -15,16 +14,21 @@ const QRCodeGenerator = () => {
   const validateUrl = (text: string) => {
     try {
       new URL(text);
+      // Se passou pelo construtor URL, é provavelmente válida
       return true;
-    } catch {
-      return false;
+    } catch (error) {
+      // Se falhou, vamos verificar com uma regex mais simples para domínios comuns
+      const urlRegex = /^(https?:\/\/)?([\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+\,\;\=.]+)?$/;
+      return urlRegex.test(text);
     }
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputUrl = e.target.value;
     setUrl(inputUrl);
-    setIsValidUrl(validateUrl(inputUrl));
+    const isValid = validateUrl(inputUrl);
+    setIsValidUrl(isValid);
+    console.log("URL:", inputUrl, "isValidUrl:", isValid);
   };
 
   const downloadQRCode = () => {
@@ -33,21 +37,23 @@ const QRCodeGenerator = () => {
       return;
     }
 
-    const canvas = qrRef.current?.querySelector("canvas");
-    if (!canvas) {
-      toast.error("Could not find QR code to download");
-      return;
-    }
+    setTimeout(() => {
+      const canvas = qrRef.current?.querySelector("canvas");
+      if (!canvas) {
+        toast.error("Could not find QR code to download");
+        return;
+      }
 
-    const image = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.href = image;
-    link.download = `qrcode-${new Date().getTime()}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    toast.success("QR Code downloaded successfully!");
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `qrcode-${new Date().getTime()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success("QR Code downloaded successfully!");
+    }, 100);
   };
 
   const copyLinkToClipboard = () => {
@@ -77,23 +83,21 @@ const QRCodeGenerator = () => {
             onChange={handleUrlChange}
             className="pr-10 bg-secondary/80 border-secondary focus-visible:ring-primary"
           />
-          <QrCode 
-            className={`absolute right-3 h-5 w-5 transition-colors ${
-              isValidUrl ? "text-primary animate-pulse-light" : "text-muted-foreground"
-            }`} 
+          <QrCode
+            className={`absolute right-3 h-5 w-5 transition-colors ${isValidUrl ? "text-primary animate-pulse-light" : "text-muted-foreground"
+              }`}
           />
         </div>
 
         <div ref={qrRef} className="flex flex-col items-center justify-center p-6">
-          <Card className={`p-4 glass-morphism transition-all duration-300 ${
-            !isValidUrl && url === "" ? "opacity-50" : "opacity-100"
-          }`}>
+          <Card className={`p-4 glass-morphism transition-all duration-300 ${!isValidUrl && url === "" ? "opacity-50" : "opacity-100"
+            }`}>
             {url ? (
               <QRCodeCanvas
                 value={url}
                 size={200}
-                bgColor={"#000000"}
-                fgColor={"#a855f7"}
+                bgColor={"#FFFFFF"} // Alterado para branco
+                fgColor={"#000000"} // Alterado para preto
                 level="H"
                 includeMargin={true}
               />
