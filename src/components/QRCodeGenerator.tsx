@@ -82,16 +82,27 @@ const QRCodeGenerator = () => {
 
         <div ref={qrRef} className="flex flex-col items-center justify-center p-6">
           <Card className={`p-4 glass-morphism transition-all duration-300 ${
-            !isValidUrl ? "opacity-50" : "opacity-100"
+            !isValidUrl && url === "" ? "opacity-50" : "opacity-100"
           }`}>
-            <QRCodeCanvas
-              value={isValidUrl ? url : "https://example.com"}
-              size={200}
-              bgColor={isValidUrl ? "#000000" : "#1a1a1a"}
-              fgColor={isValidUrl ? "#a855f7" : "#666666"}
-              level="H"
-              includeMargin={true}
-            />
+            {url ? (
+              <QRCodeCanvas
+                value={url}
+                size={200}
+                bgColor={"#000000"}
+                fgColor={"#a855f7"}
+                level="H"
+                includeMargin={true}
+              />
+            ) : (
+              <QRCodeCanvas
+                value="https://example.com"
+                size={200}
+                bgColor={"#1a1a1a"}
+                fgColor={"#666666"}
+                level="H"
+                includeMargin={true}
+              />
+            )}
           </Card>
         </div>
 
