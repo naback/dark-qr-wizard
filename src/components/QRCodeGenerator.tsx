@@ -34,7 +34,10 @@ const QRCodeGenerator = () => {
     }
 
     const canvas = qrRef.current?.querySelector("canvas");
-    if (!canvas) return;
+    if (!canvas) {
+      toast.error("Could not find QR code to download");
+      return;
+    }
 
     const image = canvas.toDataURL("image/png");
     const link = document.createElement("a");
@@ -57,7 +60,8 @@ const QRCodeGenerator = () => {
       .then(() => {
         toast.success("URL copied to clipboard!");
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Failed to copy URL:", error);
         toast.error("Failed to copy URL");
       });
   };
@@ -111,6 +115,7 @@ const QRCodeGenerator = () => {
             onClick={downloadQRCode}
             className={`w-1/2 gap-2 ${!isValidUrl ? "opacity-70 pointer-events-none" : ""}`}
             disabled={!isValidUrl}
+            type="button"
           >
             <Download size={18} />
             Download
@@ -120,6 +125,7 @@ const QRCodeGenerator = () => {
             variant="outline"
             className={`w-1/2 gap-2 border-primary/30 hover:bg-primary/10 ${!isValidUrl ? "opacity-70 pointer-events-none" : ""}`}
             disabled={!isValidUrl}
+            type="button"
           >
             <Link size={18} />
             Copy URL
