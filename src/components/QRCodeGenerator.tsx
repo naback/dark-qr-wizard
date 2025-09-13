@@ -17,9 +17,8 @@ const QRCodeGenerator = () => {
       // Se passou pelo construtor URL, é provavelmente válida
       return true;
     } catch (error) {
-      // Se falhou, vamos verificar com uma regex mais simples para domínios comuns
-      const urlRegex = /^(https?:\/\/)?([\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+\,\;\=.]+)?$/;
-      return urlRegex.test(text);
+      // Se falhou, o texto não é uma URL válida
+      return false;
     }
   };
 
