@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/", // Corrigido para funcionar em domínio raiz no Netlify
+  base: "/qrcodegen/", // Corrigido para funcionar em domínio raiz no Netlify
   server: {
     host: "::",
     port: 8080,
